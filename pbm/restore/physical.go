@@ -1827,7 +1827,7 @@ func (r *PhysRestore) checkHB(file string) error {
 	// basically wait another hbFrameSec*2 sec for heartbeat files.
 	if errors.Is(err, storage.ErrNotExist) {
 		if r.startTS+hbFrameSec*2 < ts {
-			return errors.Errorf("stuck, last beat ts: %d", r.startTS)
+			return errors.Errorf("stuck(1), last beat ts: %d", r.startTS)
 		}
 		return nil
 	}
@@ -1851,7 +1851,7 @@ func (r *PhysRestore) checkHB(file string) error {
 	}
 
 	if t+hbFrameSec*2 < ts {
-		return errors.Errorf("stuck, last beat ts: %d", t)
+		return errors.Errorf("stuck(2), last beat ts: %d", t)
 	}
 
 	return nil

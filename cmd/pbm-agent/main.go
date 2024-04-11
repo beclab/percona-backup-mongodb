@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/alecthomas/kingpin"
 	"github.com/pkg/errors"
@@ -18,6 +19,7 @@ import (
 )
 
 const mongoConnFlag = "mongodb-uri"
+const maxRetryTimes = 100
 
 func main() {
 	var (
@@ -67,7 +69,22 @@ func runAgent(mongoURI string, dumpConns int) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	pbmClient, err := pbm.New(ctx, mongoURI, "pbm-agent")
+	var pbmClient *pbm.PBM
+	var err error
+	var nums = 0
+	for {
+		nums++
+		pbmClient, err = pbm.New(ctx, mongoURI, "pbm-agent")
+		if err == nil {
+			break
+		}
+		log.Println("Retry:", err)
+		if nums > maxRetryTimes {
+			break
+		}
+		time.Sleep(2 * time.Second)
+	}
+
 	if err != nil {
 		return errors.Wrap(err, "connect to PBM")
 	}
