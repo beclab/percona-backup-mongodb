@@ -114,7 +114,7 @@ func Main() {
 	restoreFinishCmd.Arg("restore_name", "Restore name").StringVar(&finishRestore.restore)
 	restoreFinishCmd.Flag("config", "Path to PBM config").Short('c').Required().StringVar(&finishRestore.cfg)
 
-	restoreCmd := pbmCmd.Command("restore", "Restore backup")
+	restoreCmd := pbmCmd.Command("restore-ext", "Restore backup")
 	restore := restoreOpts{}
 	restoreCmd.Arg("backup_name", "Backup name to restore").StringVar(&restore.bcp)
 	restoreCmd.Flag("time", fmt.Sprintf("Restore to the point-in-time. Set in format %s", datetimeFormat)).StringVar(&restore.pitr)

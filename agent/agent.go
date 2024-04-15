@@ -103,7 +103,8 @@ func (a *Agent) Start() error {
 				go a.Backup(cmd.Backup, cmd.OPID, ep)
 			case pbm.CmdCancelBackup:
 				a.CancelBackup()
-			case pbm.CmdRestore:
+				// case pbm.CmdRestore:
+			case pbm.CmdRestoreExt:
 				a.Restore(cmd.Restore, cmd.OPID, ep)
 			case pbm.CmdReplay:
 				a.OplogReplay(cmd.Replay, cmd.OPID, ep)

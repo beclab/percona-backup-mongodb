@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	logex "log"
 	"os"
 	"strconv"
 	"strings"
@@ -268,7 +269,8 @@ func restore(cn *pbm.PBM, o *restoreOpts, nss []string, rsMapping map[string]str
 	name := time.Now().UTC().Format(time.RFC3339Nano)
 
 	cmd := pbm.Cmd{
-		Cmd: pbm.CmdRestore,
+		// Cmd: pbm.CmdRestore,
+		Cmd: pbm.CmdRestoreExt,
 		Restore: &pbm.RestoreCmd{
 			Name:       name,
 			BackupName: bcp,
@@ -306,6 +308,7 @@ func restore(cn *pbm.PBM, o *restoreOpts, nss []string, rsMapping map[string]str
 		}
 	}
 
+	logex.Printf("send restore cmd %s", cmd.String())
 	err = cn.SendCmd(cmd)
 	if err != nil {
 		return nil, errors.Wrap(err, "send command")
