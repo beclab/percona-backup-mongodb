@@ -1,19 +1,22 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:1.19
-WORKDIR /opt/pbm
-COPY . .
+# FROM registry.access.redhat.com/ubi8/go-toolset:1.19
+# WORKDIR /opt/pbm
+# COPY . .
 # RUN make install-k8s
-RUN make build-k8s
+# RUN make build-k8s
 
-# RUN go mod tidy \ 
-#   && go build -ldflags="-s -w" -v -o ./output/pbm ./cmd/pbm \ 
-#   && go build -ldflags="-s -w" -v -o ./output/pbm-agent-restore ./cmd/pbm-agent \ 
-#   && go build -ldflags="-s -w" -v -o ./output/pbm-agent-entrypoint ./cmd/pbm-agent-entrypoint
+# # RUN go mod tidy \ 
+# #   && go build -ldflags="-s -w" -v -o ./output/pbm ./cmd/pbm \ 
+# #   && go build -ldflags="-s -w" -v -o ./output/pbm-agent ./cmd/pbm-agent \ 
+# #   && go build -ldflags="-s -w" -v -o ./output/pbm-agent-entrypoint ./cmd/pbm-agent-entrypoint
 
-FROM eball/percona-server-mongodb-operator:backup
-
+# FROM eball/percona-server-mongodb-operator:backup
+FROM registry.access.redhat.com/ubi8/ubi-minimal
+COPY . .
 # COPY --from=0 /opt/app-root/src/go/bin/pbm /opt/app-root/src/go/bin/pbm-agent /opt/app-root/src/go/bin/pbm-agent-entrypoint /opt/app-root/src/go/bin/pbm-speed-test /usr/bin/
-# COPY ./docker/start-agent.sh /start-agent.sh
-COPY --from=0 /opt/pbm/bin/pbm /opt/pbm/bin/pbm-agent-restore /opt/pbm/bin/pbm-agent-entrypoint /usr/bin/
+COPY ./docker/start-agent.sh /start-agent.sh
+# COPY --from=0 /opt/pbm/bin/pbm /opt/pbm/bin/pbm-agent /opt/pbm/bin/pbm-agent-entrypoint /usr/bin/
+
+COPY ./output/pbm ./output/pbm-agent ./output/pbm-agent-entrypoint ./output/pbm-speed-test /usr/bin/
 
 USER nobody
 
