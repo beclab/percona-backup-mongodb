@@ -60,7 +60,7 @@ func main() {
 
 	var exitCode int
 	for {
-		// l.Printf("---> pbm-agent-entrypoint cmd: %s, args: %v", agentCmd, os.Args[1:])
+		l.Printf("pbm-agent-entrypoint cmd: %s, args: %v", agentCmd, os.Args[1:])
 		cmd := exec.Command(agentCmd, os.Args[1:]...)
 		cmd.Stderr = os.Stderr
 		cmd.Stdin = os.Stdin

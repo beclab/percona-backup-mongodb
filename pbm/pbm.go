@@ -65,7 +65,6 @@ const (
 	CmdUndefined    Command = ""
 	CmdBackup       Command = "backup"
 	CmdRestore      Command = "restore"
-	CmdRestoreExt   Command = "restore-ext"
 	CmdReplay       Command = "replay"
 	CmdCancelBackup Command = "cancelBackup"
 	CmdResync       Command = "resync"

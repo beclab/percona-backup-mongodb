@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"crypto/tls"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -388,11 +389,15 @@ func (s *S3) List(prefix, suffix string) ([]storage.FileInfo, error) {
 		lparams.Prefix = aws.String(prfx)
 	}
 
+	lpb, _ := json.Marshal(lparams)
+	s.log.Info("[s3] prefix: %s, lparams: %s", prfx, string(lpb))
 	var files []storage.FileInfo
 	err := s.s3s.ListObjectsPages(lparams,
 		func(page *s3.ListObjectsOutput, lastPage bool) bool {
+			s.log.Info("[s3] page: %d", len(page.Contents))
 			for _, o := range page.Contents {
 				f := aws.StringValue(o.Key)
+				s.log.Info("[s3] page key: %s", f)
 				f = strings.TrimPrefix(f, aws.StringValue(lparams.Prefix))
 				if len(f) == 0 {
 					continue

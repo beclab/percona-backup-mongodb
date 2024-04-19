@@ -269,8 +269,7 @@ func restore(cn *pbm.PBM, o *restoreOpts, nss []string, rsMapping map[string]str
 	name := time.Now().UTC().Format(time.RFC3339Nano)
 
 	cmd := pbm.Cmd{
-		// Cmd: pbm.CmdRestore,
-		Cmd: pbm.CmdRestoreExt,
+		Cmd: pbm.CmdRestore,
 		Restore: &pbm.RestoreCmd{
 			Name:       name,
 			BackupName: bcp,

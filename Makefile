@@ -36,7 +36,7 @@ build-k8s: build-all
 build-pbm:
 	$(ENVS) go build -ldflags="$(LDFLAGS)" $(BUILD_FLAGS) -o ./bin/pbm ./cmd/pbm
 build-agent:
-	$(ENVS) go build -ldflags="$(LDFLAGS)" $(BUILD_FLAGS) -o ./bin/pbm-agent-restore ./cmd/pbm-agent
+	$(ENVS) go build -ldflags="$(LDFLAGS)" $(BUILD_FLAGS) -o ./bin/pbm-agent ./cmd/pbm-agent
 build-stest:
 	$(ENVS) go build -ldflags="$(LDFLAGS)" $(BUILD_FLAGS) -o ./bin/pbm-speed-test ./cmd/pbm-speed-test
 build-entrypoint:
