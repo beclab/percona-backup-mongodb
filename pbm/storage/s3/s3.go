@@ -376,14 +376,18 @@ func (s *S3) Save(name string, data io.Reader, sizeb int64) error {
 
 func (s *S3) List(prefix, suffix string) ([]storage.FileInfo, error) {
 	prfx := path.Join(s.opts.Prefix, prefix)
+	s.log.Info("[s3] List - opts.prefix: %s, prefix: %s, suffix: %s, prfx: %s", s.opts.Prefix, prefix, suffix, prfx)
 
 	if prfx != "" && !strings.HasSuffix(prfx, "/") {
 		prfx = prfx + "/"
 	}
 
 	lparams := &s3.ListObjectsInput{
-		Bucket: aws.String(s.opts.Bucket),
+		Bucket:    aws.String(s.opts.Bucket),
+		Delimiter: aws.String("/"),
 	}
+
+	s.log.Info("[s3] List - prefix: %s, suffix: %s, prfx: %s", prefix, suffix, prfx)
 
 	if prfx != "" {
 		lparams.Prefix = aws.String(prfx)
@@ -392,13 +396,13 @@ func (s *S3) List(prefix, suffix string) ([]storage.FileInfo, error) {
 	lpb, _ := json.Marshal(lparams)
 	s.log.Info("[s3] prefix: %s, lparams: %s", prfx, string(lpb))
 	var files []storage.FileInfo
+
 	err := s.s3s.ListObjectsPages(lparams,
 		func(page *s3.ListObjectsOutput, lastPage bool) bool {
-			s.log.Info("[s3] page: %d", len(page.Contents))
 			for _, o := range page.Contents {
 				f := aws.StringValue(o.Key)
-				s.log.Info("[s3] page key: %s", f)
 				f = strings.TrimPrefix(f, aws.StringValue(lparams.Prefix))
+
 				if len(f) == 0 {
 					continue
 				}
@@ -407,6 +411,7 @@ func (s *S3) List(prefix, suffix string) ([]storage.FileInfo, error) {
 				}
 
 				if strings.HasSuffix(f, suffix) {
+					s.log.Info("[s3] page key: %s, suffix: %s, key: %s", f, suffix, *o.Key)
 					files = append(files, storage.FileInfo{
 						Name: f,
 						Size: aws.Int64Value(o.Size),
