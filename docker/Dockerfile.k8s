@@ -39,8 +39,16 @@ RUN set -ex; \
     percona-release enable psmdb-50 release
 
 RUN set -ex; \
-    curl -Lf -o /tmp/jq.rpm https://download.fedoraproject.org/pub/epel/7/x86_64/Packages/j/jq-1.6-2.el7.x86_64.rpm; \
-    curl -Lf -o /tmp/oniguruma.rpm http://vault.centos.org/centos/8/AppStream/x86_64/os/Packages/oniguruma-6.8.2-2.el8.x86_64.rpm; \
+    case `uname -m` in \
+    x86_64) ARCH=x86_64; ;; \
+    armv7l) ARCH=armv7l; ;; \
+    aarch64) ARCH=aarch64; ;; \
+    ppc64le) ARCH=ppc64le; ;; \
+    s390x) ARCH=s390x; ;; \
+    *) echo "un-supported arch, exit ..."; exit 1; ;; \
+    esac && \
+    curl -Lf -o /tmp/jq.rpm https://download.fedoraproject.org/pub/epel/7/${ARCH}/Packages/j/jq-1.6-2.el7.${ARCH}.rpm; \
+    curl -Lf -o /tmp/oniguruma.rpm http://vault.centos.org/centos/8/AppStream/$ARCH/os/Packages/oniguruma-6.8.2-2.el8.${ARCH}.rpm; \
     rpmkeys --checksig /tmp/jq.rpm /tmp/oniguruma.rpm; \
     \
     rpm -i /tmp/jq.rpm /tmp/oniguruma.rpm; \
